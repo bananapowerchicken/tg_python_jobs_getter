@@ -8,11 +8,12 @@ from tg_python_jobs_getter.utils import channels_list
 load_dotenv()
 
 # Замените на ваш API ID и API Hash
-api_id = os.getenv('API_ID')
-api_hash = os.getenv('API_HASH')
+API_ID = os.getenv('API_ID')
+API_HASH = os.getenv('API_HASH')
+MSG_AMOUNT_LIMIT = 30
 
 # Инициализация клиента
-client = TelegramClient('job_filter_session', api_id, api_hash)
+client = TelegramClient('job_filter_session', API_ID, API_HASH)
 
 # Укажите нужные каналы и ключевое слово
 channels = [url.split('/')[-1] for url in channels_list]  # замените на юзернеймы каналов
@@ -20,25 +21,6 @@ keyword = 'python'  # ключевое слово для поиска
 
 print("Initializing the client...")
 
-# # Функция обработки сообщений
-# async def process_message(message):
-#     message_text = message.message.lower()
-#     message_date = message.date
-
-#     # Получаем текущую дату и время с часовым поясом (например, UTC)
-#     timezone = pytz.UTC
-#     time_24_hours_ago = datetime.now(timezone) - timedelta(days=1)
-
-#     # Проверяем, если сообщение за последние 24 часа и содержит ключевое слово
-#     if message_date > time_24_hours_ago:
-#         if keyword in message_text:
-#             # Пересылаем сообщение в "Saved Messages"
-#             await client.send_message('me', message)
-#             print(f"Message from {message.date} with ID {message.id} sent to Saved Messages.")
-#         else:
-#             print(f"Message {message.id} does not contain the keyword.")
-#     else:
-#         print(f"Message {message.id} is older than 24 hours.")
 
 # Функция для обхода всех сообщений в канале
 async def process_recent_messages():    
@@ -48,7 +30,7 @@ async def process_recent_messages():
         print(f"Processing messages in channel: {channel}...")
         
         # Получаем все сообщения в канале за последние 24 часа
-        async for message in client.iter_messages(channel, limit=30): # last 50 msgs
+        async for message in client.iter_messages(channel, limit=MSG_AMOUNT_LIMIT): # last 50 msgs
             # Печатаем информацию о сообщении
             print(f"Processing message ID: {message.id}, Date: {message.date}")
             
